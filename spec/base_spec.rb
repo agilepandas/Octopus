@@ -38,7 +38,7 @@ describe Octopus::Base do
     it "should load any plugins that are specified" do
       octopus = Octopus::Base.new(:test)
       octopus.run!
-      octopus.threads.count.should be(2)
+      octopus.threads.count.should be(3)
     end
   end
 end

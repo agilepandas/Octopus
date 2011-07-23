@@ -13,6 +13,15 @@ describe Octopus::Plugin do
       octopus.config["test"].should == true
     end
     
+    it "Should add the base object" do
+      octopus.base.should be(base)
+    end
+
+    it "Should add the sinatra object" do
+      octopus.http.should be(base.http)
+    end
+
+    
     it "Should supply the logger object" do
       octopus.logger.should be(base.logger)
     end

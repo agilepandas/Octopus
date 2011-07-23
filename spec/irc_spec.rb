@@ -17,5 +17,9 @@ describe Octopus::Irc do
     it "Should supply the logger object" do
       octopus.logger.should be(base.logger)
     end
+    
+    it "Should initiate a cinch bot" do
+      octopus.bot.class.should be(Cinch::Bot)
+    end
   end
 end
