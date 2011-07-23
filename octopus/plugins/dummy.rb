@@ -1,4 +1,6 @@
 module Octopus
+  # Dummy plugin used as basic example and for test-cases
+  # This should probably be moved elsewhere
   class Dummy < Octopus::Plugin
     def name
       "dummy"

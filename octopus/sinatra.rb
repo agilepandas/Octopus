@@ -9,9 +9,9 @@ module Octopus
      Octopus::Sinatra.owner.message = {:message => params[:message], :channel => params[:channel]}
     end
        
-    get "/say/:plugin/:channel/:message" do
+    get "/say/:plugin/:target/:message" do
       protected!
-      Octopus::Sinatra.owner.message = {:message => params[:message], :channel => params[:channel], :plugin => params[:plugin]}
+      Octopus::Sinatra.owner.message = {:message => params[:message], :target => params[:target], :plugin => params[:plugin]}
     end
     
     helpers do
@@ -24,7 +24,7 @@ module Octopus
     
       def authorized?
         @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == ["test","test"]
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [Octopus::Sinatra.username,Octopus::Sinatra.password]
       end
 
     end

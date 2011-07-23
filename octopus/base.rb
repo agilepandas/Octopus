@@ -5,6 +5,7 @@ module Octopus
   class Base
    attr_accessor :env, :threads, :logger, :config, :http, :should_run
    
+   # Reads the config file according to the current environment
     def load_config!
       config_file = File.join("#{File.dirname(__FILE__)}/../config/", "#{self.env}.yml")
       if File.exists?(config_file)
@@ -13,24 +14,28 @@ module Octopus
         raise Octopus::NoConfigFileError, "No config found for environment: #{env} tried loading: #{config_file}"
       end
       self.logger.debug("Config-file: #{config.inspect}")
-      self.threads = []
       self.config = config["octopus"]
     end
   
+    # Accepts one argument, the environment the bot should be run in.
     def initialize(env = :development)
       Thread.abort_on_exception = true
       self.logger = Logger.new('logfile.log')
       self.env = env
       self.should_run = true
+      self.threads = []
       self.load_config!
       self.logger.info("Ocotopus initing!")
     end
     
+    # This starts the sinatra backend
     def start_http_backend
       self.http = Octopus::Wrapper.new(self)
-      http.run!
+      self.http.run!
     end
     
+    # Loop over all plugins which are found in the yaml file.
+    # It requires them and initiates an object.
     def load_plugins
       if self.config["plugins"].class == Array
         logger.info("#{self.config["plugins"].count} plugins found")
@@ -56,11 +61,13 @@ module Octopus
       end
     end
     
+    # Makes sure all threads get closed down properly
     def clean_up_threads
        logger.info("Sigint received, closing down")
        self.threads.each {|t| t.terminate}
      end
      
+    # Method to get everything started yo!
     def run!
       self.threads << Thread.new do
         while self.should_run

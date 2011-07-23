@@ -1,4 +1,8 @@
 module Octopus
+  # Octopus plugin class that spawns a irc bot that sits in the supplied channels and relays messages.
+  # The target is a IRC-room to talk in.
+  # ie.
+  # /say/irc/agile-pandas/Hello
   class Irc < Octopus::Plugin
     attr_accessor :bot
 
@@ -31,15 +35,19 @@ module Octopus
   
     def parse(http)
       message = http.message[:message]
-      channel = http.message[:channel]
+      target = http.message[:target]
       if message
-        self.debug("Sending: #{http.message}")
-        puts channel
-        if channel
+        self.debug("Sending: #{http.message} to #{target}")
+        if target
           channel = self.bot.channels.find{|x| x == "##{channel}"}
         end
-        channel ||= self.bot.channels.first
-        channel.safe_send(message)
+        
+        if channel
+          channel.safe_send(message)
+        else
+          self.info("Not in channel, forgetting about the message")
+        end
+        
         http.message = nil
       end
     end
@@ -49,7 +57,7 @@ module Octopus
       self.base.threads << Thread.new do
         self.bot.start
       end
-      
+
       super
     end
   end

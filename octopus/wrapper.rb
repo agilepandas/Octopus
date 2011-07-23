@@ -3,12 +3,12 @@ module Octopus
     attr_accessor :base
     def initialize(base)
       self.base = base
-      
+      self.base.logger.info("Starting HTTP backend")
       @mutex = Mutex.new
       @message = {}
       Octopus::Sinatra.owner = self
-      # Octopus::Sinatra.username = options["username"] || "octopus"
-      # Octopus::Sinatra.password = options["password"] || "thebot"
+      Octopus::Sinatra.username = base.config["authentication"]["username"] || "octopus"
+      Octopus::Sinatra.password = base.config["authentication"]["password"] || "thebot"
     end
 
     def message= msg
