@@ -1,8 +1,10 @@
-  `  .---.
+<pre>
+ .---.
 ( @ @ )
  ).-.(
 '/||||\'
-  '|'` **Octopus** (ascii by hh)
+  '|' Octopus (ascii by hh)
+</pre>
 
 Description
 -----------
