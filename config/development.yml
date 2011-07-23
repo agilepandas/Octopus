@@ -1,0 +1,13 @@
+octopus:
+    plugins:
+        - dummy
+        - irc
+    authentication:
+        username: 'octopus'
+        password: 'test'
+    irc:
+        server: irc.freenode.org
+        channels:
+            - "#agile-pandas"
+        nick: "Octopus"
+        real_name: "Mr. BlabberMouth"

@@ -1,0 +1,12 @@
+require 'rubygems'
+require 'logger'
+require 'yaml'
+require 'sinatra'
+require 'active_support/inflector'
+require 'cinch'
+
+require File.dirname(__FILE__) + '/../octopus/plugins/plugin.rb'
+require File.dirname(__FILE__) + '/../octopus/plugins/irc.rb'
+require File.dirname(__FILE__) + '/../octopus/base.rb'
+require File.dirname(__FILE__) + '/../octopus/wrapper.rb'
+require File.dirname(__FILE__) + '/../octopus/sinatra.rb'

@@ -1,0 +1,14 @@
+octopus:
+    plugins: 
+        - dummy
+    plugin:
+        test: true
+    authentication:
+        username: 'test'
+        password: 'test'
+    irc:
+        server: freenode.org
+        channels:
+            - "#octopus-test"
+        nick: "Octopus"
+        real_name: "Mr. BlabberMouth"
