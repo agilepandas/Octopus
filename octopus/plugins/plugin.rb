@@ -20,6 +20,23 @@ module Octopus
       self.http = base.http
       self.base = base
     end
+    
+    def parse(http)
+      debug(http.message.inspect)
+    end
+    
+    def run!
+      self.debug("Bot is running!")
+      while self.base.should_run 
+        self.debug("Checking for message")
+
+        if http.message && http.message[:plugin] == self.name
+          parse(http)
+        end
+        sleep 3
+      end
+      exit
+    end
 
     def parse_options(config)
       if config.has_key?(self.name)
