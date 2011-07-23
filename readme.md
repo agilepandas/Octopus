@@ -1,12 +1,12 @@
- ,---.
-( @ @ )
- ).-.(
-'/|||\`
-  '|` Octopus (ascii by hh)
+   ,---.
+  ( @ @ )
+   ).-.(
+  '/|||\`
+    '|` Octopus (ascii by hh)
 
 Description
 -----------
-Octopus is a http-based API for relaying messages between applications applications.
+Octopus is a http-based API for relaying messages between applications.
 
 Possible use-cases
 ------------------
