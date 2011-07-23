@@ -51,8 +51,9 @@ module Octopus
               instance.run!
             rescue LoadError
               raise Octopus::NoPluginError, "Plugin not found"
-            rescue StandardError
+            rescue StandardError => e
               logger.info("Error while loading plugin: #{plugin}")
+              logger.debug(e)              
             end
           end
         end

@@ -36,11 +36,10 @@ module Octopus
     def parse(http)
       message = http.message[:message]
       target = http.message[:target]
-      if message
+      if message && target
         self.debug("Sending: #{http.message} to #{target}")
-        if target
-          channel = self.bot.channels.find{|x| x == "##{channel}"}
-        end
+        
+        channel = self.bot.channels.find{|x| self.normalize(x.name) == self.normalize(target.strip) }
         
         if channel
           channel.safe_send(message)
@@ -59,6 +58,11 @@ module Octopus
       end
 
       super
+    end
+    
+    def normalize(channel)
+      channel = "##{channel}" if channel.match(/#/) == nil
+      return channel  
     end
   end
 end

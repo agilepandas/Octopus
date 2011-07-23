@@ -9,5 +9,5 @@ octopus:
         server: irc.freenode.org
         channels:
             - "#agile-pandas"
-        nick: "Octopus"
+        nick: "MrOctopus"
         real_name: "Mr. BlabberMouth"
