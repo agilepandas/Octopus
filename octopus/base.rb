@@ -3,7 +3,7 @@ module Octopus
   class NoPluginError < StandardError;end
 
   class Base
-   attr_accessor :env, :threads, :logger, :config, :http, :should_run
+   attr_accessor :env, :threads, :logger, :config, :http, :should_run, :plugins
    
    # Reads the config file according to the current environment
     def load_config!
@@ -15,6 +15,8 @@ module Octopus
       end
       self.logger.debug("Config-file: #{config.inspect}")
       self.config = config["octopus"]
+      
+      self.plugins = PluginManager.new self.config["plugins"], self.logger
     end
   
     # Accepts one argument, the environment the bot should be run in.
@@ -37,36 +39,30 @@ module Octopus
     # Loop over all plugins which are found in the yaml file.
     # It requires them and initiates an object.
     def load_plugins
-      if self.config["plugins"].class == Array
-        logger.info("#{self.config["plugins"].count} plugins found")
-        self.config["plugins"].each do |plugin|
+      self.plugins.all do |plugin|
+        # Create new thread for each plugin found in config.
+        self.threads << Thread.new do
+          logger.info("Loading plugin: #{plugin}")
+          begin
+            file_name = File.join(File.dirname(__FILE__), "plugins", "#{plugin}.rb")
+            logger.debug("Requiring plugin file located at: #{file_name}")
           
-          # Create new thread for each plugin found in config.
-          self.threads << Thread.new do
-            logger.info("Loading plugin: #{plugin}")
-            begin
-              file_name = File.join(File.dirname(__FILE__), "plugins", "#{plugin}.rb")
-              logger.debug("Requiring plugin file located at: #{file_name}")
-              
-              # Require plugin base.
-              require file_name
-              
-              # Acquire class name
-              klass = "Octopus::#{plugin.classify}".constantize
-              # Instantiate new class
-              plugin = klass.new(self)
-              # Run the plugin
-              plugin.run!
-            rescue LoadError
-              raise Octopus::NoPluginError, "Plugin not found"
-            rescue StandardError => e
-              logger.info("Error while loading plugin: #{plugin}")
-              logger.debug(e)              
-            end
+            # Require plugin base.
+            require file_name
+          
+            # Acquire class name
+            klass = "Octopus::#{plugin.classify}".constantize
+            # Instantiate new class
+            plugin = klass.new(self)
+            # Run the plugin
+            plugin.run!
+          rescue LoadError
+            raise Octopus::NoPluginError, "Plugin not found"
+          rescue StandardError => e
+            logger.info("Error while loading plugin: #{plugin}")
+            logger.debug(e)              
           end
         end
-      else
-        logger.info("No plugins found")
       end
     end
     
