@@ -50,7 +50,7 @@ module Octopus
             # Require plugin base.
             require file_name
           
-            # Acquire class name
+            #  Acquire class name
             klass = "Octopus::#{plugin.classify}".constantize
             # Instantiate new class
             plugin = klass.new(self)
