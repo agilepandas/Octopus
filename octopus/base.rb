@@ -72,7 +72,7 @@ module Octopus
        self.threads.each {|t| t.terminate}
     end
 
-    def register_trap!
+    def register_watcher!
       self.threads << Thread.new do
         while self.should_run
           sleep 1
@@ -89,7 +89,7 @@ module Octopus
     # Method to get everything started yo!
     def run!
       # Register traps and setup watcher thread.
-      register_trap!
+      register_watcher!
       
       self.start_http_backend
       self.load_plugins
