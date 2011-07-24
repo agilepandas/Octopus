@@ -66,25 +66,31 @@ module Octopus
     def clean_up_threads
        logger.info("Sigint received, closing down")
        self.threads.each {|t| t.terminate}
-     end
-     
-    # Method to get everything started yo!
-    def run!
+    end
+
+    def register_trap!
       self.threads << Thread.new do
         while self.should_run
-          self.logger.debug("Threads running: " + self.threads.count.to_s)
           sleep 1
           Signal.trap("SIGINT") do
+            # Stop main loop
             self.should_run = false
-          end
-          if self.should_run == false
+            # Clean up threads
             clean_up_threads
           end
         end
       end
+    end
+     
+    # Method to get everything started yo!
+    def run!
+      # Register traps and setup watcher thread.
+      register_trap!
       
       self.start_http_backend
       self.load_plugins
+      
+      self.logger.debug("Threads running: #{self.threads.count}")
       
       if env == :test
         puts "Not joining threads"
