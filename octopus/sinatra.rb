@@ -4,10 +4,10 @@ module Octopus
       attr_accessor :owner, :message, :username, :password
      end
   
-    post "/say" do
-     protected!
-     Octopus::Sinatra.owner.message = {:message => params[:message], :channel => params[:channel]}
-    end
+     post "/say/:plugin/:target" do
+       protected!
+       Octopus::Sinatra.owner.message = {:message => params[:message], :target => params[:target], :plugin => params[:plugin]}
+     end
        
     get "/say/:plugin/:target/:message" do
       protected!
