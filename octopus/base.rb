@@ -7,7 +7,7 @@ module Octopus
    
    # Reads the config file according to the current environment
     def load_config!
-      config_file = File.join("#{File.dirname(__FILE__)}/../config/", "#{self.env}.yml")
+      config_file = File.join(File.dirname(__FILE__), "..", "config", "#{self.env}.yml")
       if File.exists?(config_file)
         config = YAML::load(File.open(config_file))
       else
@@ -40,15 +40,23 @@ module Octopus
       if self.config["plugins"].class == Array
         logger.info("#{self.config["plugins"].count} plugins found")
         self.config["plugins"].each do |plugin|
+          
+          # Create new thread for each plugin found in config.
           self.threads << Thread.new do
             logger.info("Loading plugin: #{plugin}")
             begin
-              file_name = File.dirname(__FILE__) + "/plugins/#{plugin}.rb"
+              file_name = File.join(File.dirname(__FILE__), "plugins", "#{plugin}.rb")
               logger.debug("Requiring plugin file located at: #{file_name}")
-              require File.dirname(__FILE__) + "/plugins/#{plugin}.rb"
+              
+              # Require plugin base.
+              require file_name
+              
+              # Acquire class name
               klass = "Octopus::#{plugin.classify}".constantize
-              instance = klass.new(self)
-              instance.run!
+              # Instantiate new class
+              plugin = klass.new(self)
+              # Run the plugin
+              plugin.run!
             rescue LoadError
               raise Octopus::NoPluginError, "Plugin not found"
             rescue StandardError => e
